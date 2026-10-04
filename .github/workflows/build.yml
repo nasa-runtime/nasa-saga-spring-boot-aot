@@ -1,0 +1,32 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    strategy:
+      matrix:
+        java: ['21', '25']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - run: mvn -B -ntp clean verify
+      - if: matrix.java == '21'
+        run: |
+          jar tf target/nasa-saga-spring-boot-aot-1.0.0.jar | grep -F META-INF/spring/aot.factories
+          jar tf target/nasa-saga-spring-boot-aot-1.0.0.jar | grep -F META-INF/native-image/io.github.nasa-runtime/nasa-saga-spring-boot-aot/native-image.properties
+          jar tf target/nasa-saga-spring-boot-aot-1.0.0.jar | grep -F META-INF/README.md
+          jar tf target/nasa-saga-spring-boot-aot-1.0.0.jar | grep -F META-INF/LICENSE
+          test -f target/nasa-saga-spring-boot-aot-1.0.0-sources.jar
+          test -f target/nasa-saga-spring-boot-aot-1.0.0-javadoc.jar

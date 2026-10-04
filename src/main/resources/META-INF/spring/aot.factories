@@ -1,0 +1,2 @@
+org.springframework.aot.hint.RuntimeHintsRegistrar=io.github.nasaruntime.saga.aot.NasaSagaRuntimeHints
+org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor=io.github.nasaruntime.saga.aot.NasaSagaRuntimeHints
